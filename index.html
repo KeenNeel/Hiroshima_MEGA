@@ -533,7 +533,7 @@ footer .footer-logo { font-size: 1.1rem; font-weight: 900; color: var(--carp-red
 }
 .ticker-inner {
   display: inline-block;
-  animation: ticker 25s linear infinite;
+  animation: ticker 65s linear infinite;
 }
 @keyframes ticker {
   0% { transform: translateX(100vw); }
@@ -585,19 +585,20 @@ body.dark .cafe-area { background: #2d1515; }
   <div class="header-inner">
     <div class="header-logo">
       <div class="logo-badge">⚾ CARP × 広島 × MEGA</div>
-      <div class="logo-title">広島<span class="carp-c">W</span>EB！<span class="carp-c">メ</span>ガ！</div>
+      <div class="logo-title" style="display:flex;align-items:center;gap:8px;">広島<span class="carp-c">W</span>EB！<span class="carp-c">メ</span>ガ！<button id="bat-btn" onclick="startBatting()" title="クリックで占いじゃ！" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;user-select:none;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-size:0.6rem;font-weight:800;color:var(--gold);white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.6);">バッティング占い！</span><span style="font-size:1.8rem;line-height:1;">⚾</span></button></div>
       <div class="logo-sub">仕事もプライベートも、ぶちええ毎日になるけえね✦ 完全版</div>
+      <div id="batting-result" style="display:none;margin-top:6px;font-size:0.75rem;font-weight:700;color:var(--gold);line-height:1.5;"></div>
     </div>
     <div class="header-controls">
       <button class="ctrl-btn" onclick="document.body.classList.toggle('dark')">🌙</button>
     </div>
   </div>
   <div class="header-stats">
-    <div class="stat-chip">🌡️ 広島市 <strong id="hdr-temp">--°C</strong></div>
-    <div class="stat-chip">🏆 カープ <strong>2026シーズン進行中</strong></div>
-    <div class="stat-chip">🦪 牡蠣 <strong>旬：冬〜春</strong></div>
-    <div class="stat-chip">🚲 ぴーすくる <strong>30分165円</strong></div>
-    <div class="stat-chip">🍁 宮島 <strong>フェリー10分</strong></div>
+    <a class="stat-chip" href="https://weather.yahoo.co.jp/weather/34/6710.html" target="_blank" style="text-decoration:none;color:white;">🌡️ 広島市 <strong id="hdr-temp">--°C</strong></a>
+    <a class="stat-chip" href="https://www.carp.co.jp/" target="_blank" style="text-decoration:none;color:white;">🏆 カープ <strong>2026シーズン進行中</strong></a>
+    <a class="stat-chip" href="https://www.google.com/maps/search/?api=1&query=牡蠣料理+広島" target="_blank" style="text-decoration:none;color:white;">🦪 牡蠣 <strong>旬：冬〜春</strong></a>
+    <a class="stat-chip" href="https://docomo-cycle.jp/hiroshima/" target="_blank" style="text-decoration:none;color:white;">🚲 ぴーすくる <strong>30分165円</strong></a>
+    <a class="stat-chip" href="https://jr-miyajimaferry.co.jp/" target="_blank" style="text-decoration:none;color:white;">🍁 宮島 <strong>フェリー10分</strong></a>
   </div>
   <div class="header-datetime">
     <span>⏰</span>
@@ -608,7 +609,7 @@ body.dark .cafe-area { background: #2d1515; }
 
 <!-- CARP TICKER -->
 <div class="carp-ticker">
-  <div class="ticker-inner">⚾ 燃えよカープ ⚾ 床田寛樹・森下暢仁・大瀬良大地 投手陣に注目！ ⚾ マツダスタジアム チケットは公式サイトへ ⚾ 「広島焼き」はNGワードじゃ！必ず「お好み焼き」と言ってね ⚾ ぶちええ広島ライフを満喫するけえ！ ⚾ たちまちビールで乾杯じゃ！ ⚾ じゃけえ、広島は最高なんよ ⚾ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+  <div class="ticker-inner" id="ticker-inner">⏳ 広島ニュースを取得中けえ…</div>
 </div>
 
 <!-- NAVIGATION -->
@@ -621,7 +622,9 @@ body.dark .cafe-area { background: #2d1515; }
   <button class="nav-btn" onclick="tab('onsen')"><span class="nav-icon">♨️</span>温泉・銭湯</button>
   <button class="nav-btn" onclick="tab('spot')"><span class="nav-icon">🏯</span>観光</button>
   <button class="nav-btn" onclick="tab('phrase')"><span class="nav-icon">🗣️</span>広島弁</button>
+  <button class="nav-btn" onclick="tab('talk')"><span class="nav-icon">💬</span>トーク</button>
   <button class="nav-btn" onclick="tab('transport')"><span class="nav-icon">🚇</span>交通</button>
+  <button class="nav-btn" onclick="tab('car')"><span class="nav-icon">🚘</span>自動車</button>
   <button class="nav-btn" onclick="tab('tips')"><span class="nav-icon">📋</span>ローカル</button>
   <button class="nav-btn" onclick="tab('diary')"><span class="nav-icon">📔</span>日記・AI</button>
   <button class="nav-btn" onclick="tab('calc')"><span class="nav-icon">🧮</span>計算</button>
@@ -638,6 +641,19 @@ body.dark .cafe-area { background: #2d1515; }
     <div id="weather-area">
       <div class="map-status">⏳ 取得中けえ…</div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🌧️ 雨雲レーダー（広島・気象庁）</div>
+      <a class="card-link" href="https://www.jma.go.jp/bosai/nowc/" target="_blank">気象庁ナウキャスト</a>
+    </div>
+    <div style="position:relative; border-radius:var(--radius-sm); overflow:hidden; border:1.5px solid var(--border); background:#1a2a1a;">
+      <canvas id="radar-canvas" style="width:100%; display:block; border-radius:var(--radius-sm);"></canvas>
+      <div id="radar-time" style="position:absolute; bottom:6px; left:8px; font-size:0.65rem; color:#fff; background:rgba(0,0,0,0.55); padding:2px 7px; border-radius:10px;"></div>
+      <button onclick="loadRadar()" style="position:absolute; top:6px; right:6px; background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.3); color:white; font-size:0.7rem; padding:3px 9px; border-radius:10px; cursor:pointer;">🔄 更新</button>
+    </div>
+    <div id="radar-status" style="font-size:0.7rem; color:var(--text-muted); margin-top:6px; text-align:center;">⏳ 雨雲データを取得中けえ…</div>
   </div>
 
   <div class="card">
@@ -805,7 +821,7 @@ body.dark .cafe-area { background: #2d1515; }
         <div class="q-btn-label">チケットぴあ</div>
         <div class="q-btn-sub">座席選択可</div>
       </div>
-      <div class="q-btn" onclick="window.open('https://eplus.jp/sf/detail/0930730001','_blank')">
+      <div class="q-btn" onclick="window.open('https://eplus.jp/','_blank')">
         <span class="q-btn-icon">➕</span>
         <div class="q-btn-label">イープラス</div>
         <div class="q-btn-sub">e+でも買えるで</div>
@@ -824,7 +840,7 @@ body.dark .cafe-area { background: #2d1515; }
       <div class="tip-title">🛒 C-garden（グッズショップ）</div>
       <div class="tip-body">試合のない日でも球場内のグッズショップ「C-garden」に入れるけえ、カープファンには聖地じゃ。ユニフォーム・帽子・タオル・お土産になるお菓子まで、カープグッズが勢揃い！</div>
       <div class="tip-actions">
-        <button class="act-btn" onclick="window.open('https://www.carp.co.jp/stadium/goods/','_blank')">🛒 グッズ情報</button>
+        <button class="act-btn" onclick="window.open('https://www.shop.carp.co.jp/','_blank')">🛒 グッズ情報</button>
       </div>
     </div>
     <div class="tip">
@@ -848,7 +864,7 @@ body.dark .cafe-area { background: #2d1515; }
         <div class="q-btn-label">RCCラジオ</div>
         <div class="q-btn-sub">カープ実況中継</div>
       </div>
-      <div class="q-btn" onclick="window.open('https://www.chugoku-np.co.jp/sports/carp/','_blank')">
+      <div class="q-btn" onclick="window.open('https://www.chugoku-np.co.jp/subcategory/%E3%82%AB%E3%83%BC%E3%83%97','_blank')">
         <span class="q-btn-icon">🗞️</span>
         <div class="q-btn-label">中国新聞カープ</div>
         <div class="q-btn-sub">詳細記事・選手情報</div>
@@ -911,6 +927,8 @@ body.dark .cafe-area { background: #2d1515; }
       <div class="q-btn" onclick="sn('ドラッグストア ウォンツ')"><span class="q-btn-icon">💊</span><div class="q-btn-label">ドラッグストア</div></div>
       <div class="q-btn" onclick="sn('カフェ おしゃれ')"><span class="q-btn-icon">☕</span><div class="q-btn-label">カフェ</div></div>
       <div class="q-btn" onclick="sn('居酒屋 流川')"><span class="q-btn-icon">🍺</span><div class="q-btn-label">居酒屋・流川</div></div>
+      <div class="q-btn" onclick="sn('ガソリンスタンド')"><span class="q-btn-icon">⛽</span><div class="q-btn-label">ガソリンスタンド</div></div>
+      <div class="q-btn" onclick="sn('公衆トイレ')"><span class="q-btn-icon">🚻</span><div class="q-btn-label">トイレ</div></div>
     </div>
   </div>
 </div>
@@ -934,7 +952,7 @@ body.dark .cafe-area { background: #2d1515; }
     <div class="tip">
       <div class="tip-title">🍳 広島お好み焼き <span class="tip-badge gold">殿堂入り</span></div>
       <div class="tip-body">薄い生地に豚肉・キャベツ・もやし・麺を重ね焼きにするのが広島スタイル。<br>
-        <strong>名店：</strong>みっちゃん総本店（八丁堀）・お好み村（新天地）・八昌（西平塚）・電光石火（ekie）<br>
+        <strong>名店：</strong><a href="https://www.google.com/maps/search/?api=1&query=みっちゃん総本店+八丁堀+広島" target="_blank">みっちゃん総本店（八丁堀）</a>・<a href="https://www.google.com/maps/search/?api=1&query=お好み村+広島+新天地" target="_blank">お好み村（新天地）</a>・<a href="https://www.google.com/maps/search/?api=1&query=八昌+お好み焼き+広島" target="_blank">八昌（西平塚）</a>・<a href="https://www.google.com/maps/search/?api=1&query=電光石火+ekie+広島" target="_blank">電光石火（ekie）</a><br>
         <strong>食べ方の流儀：</strong>カウンターで鉄板から直接コテで食べる。麺は「そば」か「うどん」を選ぶんよ。<br>
         <strong>おすすめトッピング：</strong>牡蠣・チーズ・ネギ・半熟卵。
       </div>
@@ -949,7 +967,7 @@ body.dark .cafe-area { background: #2d1515; }
     <div class="tip">
       <div class="tip-title">🍜 汁なし担々麺 <span class="tip-badge">人気急上昇</span></div>
       <div class="tip-body">花椒（ホアジャオ）のシビレと辣油の辛さがクセになる！食べる前に<strong>30回以上混ぜる</strong>のが鉄則。<br>
-        <strong>元祖：</strong>きさく / <strong>有名店：</strong>くにまつ・キング軒・ばくだん屋（つけ麺版も人気）<br>
+        <strong>元祖：</strong><a href="https://www.google.com/maps/search/?api=1&query=きさく+汁なし担々麺+広島" target="_blank">きさく</a> / <strong>有名店：</strong><a href="https://www.google.com/maps/search/?api=1&query=くにまつ+汁なし担々麺+広島" target="_blank">くにまつ</a>・<a href="https://www.google.com/maps/search/?api=1&query=キング軒+汁なし担々麺+広島" target="_blank">キング軒</a>・<a href="https://www.google.com/maps/search/?api=1&query=ばくだん屋+つけ麺+広島" target="_blank">ばくだん屋</a>（つけ麺版も人気）<br>
         ランチ一人飯にぴったりな静かなカウンター席が多いんよ。
       </div>
       <div class="tip-meta">
@@ -964,7 +982,7 @@ body.dark .cafe-area { background: #2d1515; }
       <div class="tip-title">🦪 広島牡蠣料理 <span class="tip-badge gold">瀬戸内の宝</span></div>
       <div class="tip-body">生産量日本一の広島牡蠣。旬は冬（11〜3月）だが年中食べられる店も多い。<br>
         <strong>食べ方：</strong>生ガキ（レモン絞り）・カキフライ（タルタルで）・焼きガキ・牡蠣の土手鍋・カキ丼<br>
-        <strong>宮島なら：</strong>「牡蠣屋」が超有名。行列覚悟じゃが絶品。
+        <strong>宮島なら：</strong><a href="https://www.google.com/maps/search/?api=1&query=牡蠣屋+宮島" target="_blank">「牡蠣屋」</a>が超有名。行列覚悟じゃが絶品。
       </div>
       <div class="tip-meta">
         <span>⏰ 旬：11〜3月</span><span>💰 1,500〜3,000円</span><span class="stars">★★★★★</span>
@@ -983,14 +1001,14 @@ body.dark .cafe-area { background: #2d1515; }
     </div>
     <div class="tip">
       <div class="tip-title">🍜 広島中華そば（ラーメン）</div>
-      <div class="tip-body">豚骨醤油ベースの優しい味わい。老舗の「陽気」「すずめ」「喜楽」などカウンター中心で黙々と食べるスタイルが多い。行列を覚悟するんよ。</div>
+      <div class="tip-body">豚骨醤油ベースの優しい味わい。老舗の<a href="https://www.google.com/maps/search/?api=1&query=陽気+ラーメン+広島" target="_blank">「陽気」</a>・<a href="https://www.google.com/maps/search/?api=1&query=すずめ+中華そば+広島" target="_blank">「すずめ」</a>・<a href="https://www.google.com/maps/search/?api=1&query=喜楽+中華そば+広島" target="_blank">「喜楽」</a>などカウンター中心で黙々と食べるスタイルが多い。行列を覚悟するんよ。</div>
       <div class="tip-actions">
         <button class="act-btn filled" onclick="sf('広島ラーメン 中華そば','current')">📍 近くで探す</button>
       </div>
     </div>
     <div class="tip">
       <div class="tip-title">🍱 あなごめし <span class="tip-badge gold">宮島名物</span></div>
-      <div class="tip-body">特製タレでふっくら焼き上げた穴子をご飯に敷き詰めた絶品駅弁。宮島口「うえの」が発祥で、駅弁は冷めても美味しい！宮島観光のお供に最適じゃ。ekie（広島駅）でも購入可能けえ。</div>
+      <div class="tip-body">特製タレでふっくら焼き上げた穴子をご飯に敷き詰めた絶品駅弁。宮島口<a href="https://www.google.com/maps/search/?api=1&query=うえの+あなごめし+宮島口" target="_blank">「うえの」</a>が発祥で、駅弁は冷めても美味しい！宮島観光のお供に最適じゃ。ekie（広島駅）でも購入可能けえ。</div>
       <div class="tip-actions">
         <button class="act-btn filled" onclick="sf('あなごめし 宮島口','none')">🚉 宮島口で探す</button>
         <button class="act-btn" onclick="sf('あなごめし','hiroshima')">🚉 駅周辺で探す</button>
@@ -1110,6 +1128,9 @@ body.dark .cafe-area { background: #2d1515; }
         <span style="font-size:0.7rem; color:var(--text-muted);">💰 600〜1,000円</span>
         <span style="font-size:0.7rem; color:var(--carp-red);">☕ コーヒー特化</span>
       </div>
+      <div class="tip-actions" style="margin-top:8px;">
+        <button class="act-btn filled" onclick="sf('shimaji coffee roasters 広島','none')">📍 マップ</button>
+      </div>
     </div>
     <div class="cafe-card">
       <div class="cafe-name">MELANGE De SHUHARI 広島<span class="cafe-area">中区本通</span></div>
@@ -1117,6 +1138,9 @@ body.dark .cafe-area { background: #2d1515; }
       <div class="cafe-meta">
         <span class="stars">★★★★☆</span>
         <span style="font-size:0.7rem; color:var(--text-muted);">💰 800〜1,500円</span>
+      </div>
+      <div class="tip-actions" style="margin-top:8px;">
+        <button class="act-btn filled" onclick="sf('MELANGE De SHUHARI 広島','none')">📍 マップ</button>
       </div>
     </div>
     <div class="cafe-card">
@@ -1127,6 +1151,9 @@ body.dark .cafe-area { background: #2d1515; }
         <span style="font-size:0.7rem; color:var(--text-muted);">💰 1,200〜2,000円</span>
         <span style="font-size:0.7rem; color:var(--carp-red);">🥐 モーニングあり</span>
       </div>
+      <div class="tip-actions" style="margin-top:8px;">
+        <button class="act-btn filled" onclick="sf('キャラントサンク 広島 袋町','none')">📍 マップ</button>
+      </div>
     </div>
     <div class="cafe-card">
       <div class="cafe-name">天心閣（てんしんかく）<span class="cafe-area">宮島</span></div>
@@ -1136,6 +1163,9 @@ body.dark .cafe-area { background: #2d1515; }
         <span style="font-size:0.7rem; color:var(--text-muted);">💰 800〜1,500円</span>
         <span style="font-size:0.7rem; color:var(--carp-red);">🏝️ 宮島</span>
       </div>
+      <div class="tip-actions" style="margin-top:8px;">
+        <button class="act-btn filled" onclick="sf('天心閣 宮島','none')">📍 マップ</button>
+      </div>
     </div>
     <div class="cafe-card">
       <div class="cafe-name">伊都岐珈琲 宮島店<span class="cafe-area">宮島</span></div>
@@ -1143,6 +1173,9 @@ body.dark .cafe-area { background: #2d1515; }
       <div class="cafe-meta">
         <span class="stars">★★★★☆</span>
         <span style="font-size:0.7rem; color:var(--text-muted);">💰 500〜1,000円</span>
+      </div>
+      <div class="tip-actions" style="margin-top:8px;">
+        <button class="act-btn filled" onclick="sf('伊都岐珈琲 宮島','none')">📍 マップ</button>
       </div>
     </div>
     <div class="cafe-card">
@@ -1152,6 +1185,9 @@ body.dark .cafe-area { background: #2d1515; }
         <span class="stars">★★★★☆</span>
         <span style="font-size:0.7rem; color:var(--text-muted);">💰 800〜1,500円</span>
         <span style="font-size:0.7rem; color:var(--carp-red);">🐈 尾道</span>
+      </div>
+      <div class="tip-actions" style="margin-top:8px;">
+        <button class="act-btn filled" onclick="sf('茶房こもん 尾道','none')">📍 マップ</button>
       </div>
     </div>
     <div class="section-label" style="margin-top:16px;">💡 シーン別カフェ選びのコツ</div>
@@ -1529,6 +1565,110 @@ body.dark .cafe-area { background: #2d1515; }
   </div>
 </div>
 
+<!-- ======== TALK ======== -->
+<div class="section" id="sec-talk">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">💬 鉄板トークネタ集</div>
+    </div>
+    <div class="hot-box">
+      <div class="hot-box-icon">🎯</div>
+      <div>
+        <div class="hot-box-title">アイスブレイクに使える鉄板ネタ</div>
+        <div class="hot-box-body">初対面・名刺交換・会食・移動中の雑談に。地域ネタは相手の心を一気に開くけえ覚えておくんよ！</div>
+      </div>
+    </div>
+
+    <div class="section-label">🔴 広島トーク（鉄板20選）</div>
+    <div class="tip"><div class="tip-title">1. カープの話題は必須</div><div class="tip-body">「昨日のカープ、惜しかったですね」で広島人の心は一瞬で開く。勝っても負けても話せるのが強み。<a href="https://www.carp.co.jp/" target="_blank">公式サイト</a></div></div>
+    <div class="tip"><div class="tip-title">2. お好み焼きは「広島焼き」と言わない</div><div class="tip-body">「広島焼き」はNGワード。「お好み焼き、どこのお店がおすすめですか？」が正解の聞き方。<a href="https://www.google.com/maps/search/?api=1&query=お好み焼き+広島" target="_blank">お店を探す</a></div></div>
+    <div class="tip"><div class="tip-title">3. 広電（路面電車）の話</div><div class="tip-body">「広電でどこへでも行けるのが便利ですね」は鉄板。路面電車がある都市への愛着を広島人は持っとる。<a href="https://www.hiroden.co.jp/" target="_blank">広電公式</a></div></div>
+    <div class="tip"><div class="tip-title">4. 牡蠣は広島の誇り</div><div class="tip-body">「広島の牡蠣を初めて食べました、全然違いますね！」は完璧な褒め言葉。生産量日本一を誇りにしとるけえ。</div></div>
+    <div class="tip"><div class="tip-title">5. マツダと広島の関係</div><div class="tip-body">「地元ということもあってマツダ車が多いですね」。広島のマツダ愛は深い。工場見学の話も盛り上がるんよ。<a href="https://www.mazda.co.jp/cars/factory-tour/" target="_blank">工場見学情報</a></div></div>
+    <div class="tip"><div class="tip-title">6. 宮島への日帰り体験</div><div class="tip-body">「宮島、満潮と干潮で全然違うんですね」は写真を見せながら話すと盛り上がる。大鳥居リニューアル後の話も。<a href="https://www.miyajima.or.jp/" target="_blank">宮島観光協会</a></div></div>
+    <div class="tip"><div class="tip-title">7. 「じゃけえ」を使ってみる</div><div class="tip-body">会話に「じゃけえ」「ぶちええ」を一言差し込むと場が和む。ただし多用しすぎはNG。</div></div>
+    <div class="tip"><div class="tip-title">8. 縮景園でのリフレッシュ</div><div class="tip-body">「縮景園、市内にあんな空間があるんですね。びっくりしました」。地元民が誇るが観光客が少ない穴場ネタ。<a href="https://www.google.com/maps/search/?api=1&query=縮景園+広島" target="_blank">マップ</a></div></div>
+    <div class="tip"><div class="tip-title">9. 汁なし担々麺30回混ぜルール</div><div class="tip-body">「混ぜる前に食べてしまいました…」という失敗談も笑いを取れる。地元民は30回ルールを真剣に守っとる。</div></div>
+    <div class="tip"><div class="tip-title">10. 平和公園への想い</div><div class="tip-body">広島出身者にとって平和は身近なテーマ。「資料館を拝見して考えさせられました」という真摯な言葉が信頼につながる。<a href="https://hpmmuseum.jp/" target="_blank">平和記念資料館</a></div></div>
+    <div class="tip"><div class="tip-title">11. レモン生産日本一</div><div class="tip-body">「広島レモン、酸っぱさが全然違いますね！」。瀬戸内レモンへの愛は強い。レモン鍋・レモンラーメンなどの派生話も豊富。</div></div>
+    <div class="tip"><div class="tip-title">12. 地元スーパー「ゆめタウン」愛</div><div class="tip-body">「ゆめタウン、品揃えがいいですよね」。地元企業への愛着は強く、イオンより先にゆめタウンが出てくるのが広島人。<a href="https://www.izumi.jp/" target="_blank">ゆめタウン</a></div></div>
+    <div class="tip"><div class="tip-title">13. 呉の大和ミュージアム</div><div class="tip-body">「10分の1モデル、圧巻でした」。歴史好き・男性には特に刺さる話題。てつのくじら館とセットで語るとなおよし。<a href="https://www.yamato-museum.com/" target="_blank">大和ミュージアム</a></div></div>
+    <div class="tip"><div class="tip-title">14. 流川の飲み屋街</div><div class="tip-body">「流川、活気がありますね。昨日賑わっていました」。地元の夜文化への興味を示すと親近感アップじゃ。</div></div>
+    <div class="tip"><div class="tip-title">15. ぴーすくる（シェアサイクル）</div><div class="tip-body">「ぴーすくる、便利で使いました！平坦で自転車が気持ちいいですね」。地元の移動インフラを使った話は好感度高い。<a href="https://docomo-cycle.jp/hiroshima/" target="_blank">ぴーすくる</a></div></div>
+    <div class="tip"><div class="tip-title">16. 尾道の猫と坂道</div><div class="tip-body">「尾道の猫、写真撮りまくりました」。インスタ映えと歴史文化が共存する尾道ネタは幅広い年代に受けるんよ。</div></div>
+    <div class="tip"><div class="tip-title">17. しまなみ海道サイクリング</div><div class="tip-body">「しまなみ海道、一度走ってみたいんです」。地元民が誇るナショナルサイクルルート、サイクリスト人口が増加中。<a href="https://shimanami-cycle.or.jp/" target="_blank">公式情報</a></div></div>
+    <div class="tip"><div class="tip-title">18. せんじがら（せんじ肉）</div><div class="tip-body">「初めて食べましたがビールに合いすぎて…」。広島独自のB級珍味ネタは会話のスパイスになるんよ。</div></div>
+    <div class="tip"><div class="tip-title">19. コウネ（牛肉の部位）</div><div class="tip-body">「コウネって広島独自の呼び名なんですね！」。食へのこだわりが強い広島人へのリスペクト表現になる。</div></div>
+    <div class="tip"><div class="tip-title">20. 100m道路（平和大通り）</div><div class="tip-body">「あの広い道路、100mあるんですか！」。初めて見た感動を素直に表現するのが好印象。ドリミネーションの話も盛り上がる。<a href="https://www.dreamination.com/" target="_blank">ドリミネーション</a></div></div>
+
+    <div class="section-label" style="margin-top:16px;">🎡 埼玉トーク（鉄板20選）</div>
+    <div class="tip"><div class="tip-title">1. 埼玉は「ダサい」をネタにする</div><div class="tip-body">「埼玉から来ました」→「ダサいたまって言われません？」が鉄板のボケ返し。自虐ネタで場が和む。<a href="https://www.pref.saitama.lg.jp/" target="_blank">埼玉県公式</a></div></div>
+    <div class="tip"><div class="tip-title">2. 十万石まんじゅうの話</div><div class="tip-body">「風が語りかけます」のCMは全国区。広島では通じないがCM自体を説明するのが鉄板。<a href="https://www.jumangoku.co.jp/" target="_blank">十万石公式</a></div></div>
+    <div class="tip"><div class="tip-title">3. 草加煎餅の本場感</div><div class="tip-body">「草加煎餅って全国に偽物が多くて…」。地元ならではの品質へのこだわりが会話を盛り上げる。<a href="https://www.souka-senbei.jp/" target="_blank">草加煎餅組合</a></div></div>
+    <div class="tip"><div class="tip-title">4. 大宮駅は新幹線が止まらない</div><div class="tip-body">「大宮って新幹線通るけど広島は直通ないんです」。距離感・地理感の話で自己開示ができる。</div></div>
+    <div class="tip"><div class="tip-title">5. 浦和レッズサポーターが多い</div><div class="tip-body">「埼玉はレッズサポーターが多いですよ」。カープ同様にスポーツ話でつながれる。</div></div>
+    <div class="tip"><div class="tip-title">6. 鉄道王国・埼玉</div><div class="tip-body">「埼玉は路線が多すぎてどれに乗ればいいか自分でも迷う」。広電一本の広島との違いが笑いを生む。</div></div>
+    <div class="tip"><div class="tip-title">7. 秩父・長瀞の絶景</div><div class="tip-body">「長瀞のライン下り、意外と絶景ですよ」。広島の景観と比べて話すと対話が深まる。<a href="https://www.nagatoro.gr.jp/" target="_blank">長瀞観光協会</a></div></div>
+    <div class="tip"><div class="tip-title">8. バイク・車好きが多い</div><div class="tip-body">「埼玉は車社会で免許を取る年齢がくるとすぐ買う」。広島の路面電車文化との対比で話が弾む。</div></div>
+    <div class="tip"><div class="tip-title">9. 「ダサいたまちゃん」映画ネタ</div><div class="tip-body">映画「翔んで埼玉」は埼玉县民の愛すべき自虐コンテンツ。「見ましたか？」の一言で爆笑必至。<a href="https://tondesaitama.com/" target="_blank">映画公式</a></div></div>
+    <div class="tip"><div class="tip-title">10. 川越・小江戸の実力</div><div class="tip-body">「川越って竹原みたいな古い街並みなんですよ」。広島の竹原・尾道と比べると両者の地元愛が深まる。<a href="https://www.kawagoe.com/" target="_blank">川越市観光</a></div></div>
+    <div class="tip"><div class="tip-title">11. 西武ライオンズの話</div><div class="tip-body">「カープ対ライオンズの交流戦、埼玉的には複雑です」。カープファンの広島人と笑いながら対立できる良ネタ。</div></div>
+    <div class="tip"><div class="tip-title">12. 東京へのアクセス</div><div class="tip-body">「埼玉から東京は30分、でも広島から東京は4時間…」。出張の大変さを共感してもらえる話題。</div></div>
+    <div class="tip"><div class="tip-title">13. 埼玉スタジアム2002</div><div class="tip-body">「W杯の試合があったスタジアム、地元に当時の興奮が残ってます」。サッカー話でつながれる。<a href="https://www.saitama-stadium.com/" target="_blank">スタジアム公式</a></div></div>
+    <div class="tip"><div class="tip-title">14. 海がない埼玉</div><div class="tip-body">「瀬戸内海を見て、海のない埼玉からきた私は感動しました」。素直な感動表現は好印象。</div></div>
+    <div class="tip"><div class="tip-title">15. さいたまスーパーアリーナ</div><div class="tip-body">「コンサートは大体さいたまに来る」。エンタメ話題でフランクな関係を築けるんよ。</div></div>
+    <div class="tip"><div class="tip-title">16. 埼玉の農産物自慢</div><div class="tip-body">「深谷ネギとほうれん草は日本一ですよ」。地元食材への愛情は広島人の牡蠣愛と共鳴する。</div></div>
+    <div class="tip"><div class="tip-title">17. 所沢・航空公園</div><div class="tip-body">「日本の航空発祥の地が所沢なんです」。意外な知識が会話のアクセントになるんよ。</div></div>
+    <div class="tip"><div class="tip-title">18. 大宮アルディージャ（J2）</div><div class="tip-body">「大宮、J2に落ちてしまって…カープも苦しい時期があったでしょう？」。逆境連帯ネタは強い。</div></div>
+    <div class="tip"><div class="tip-title">19. 埼玉から広島への移動</div><div class="tip-body">「新幹線で4時間、羽田から飛ぶのが正解ですね」。移動の苦労話は出張者同士で共感を生む。</div></div>
+    <div class="tip"><div class="tip-title">20. ムーミンバレーパーク</div><div class="tip-body">「飯能にムーミンのテーマパークができたんです、意外でしょ？」。ギャップ感が笑いを誘う。<a href="https://metsa-hanno.com/" target="_blank">ムーミンバレー</a></div></div>
+
+    <div class="section-label" style="margin-top:16px;">🗼 品川トーク（鉄板20選）</div>
+    <div class="tip"><div class="tip-title">1. 品川は東京じゃなく神奈川説</div><div class="tip-body">「品川駅、実は神奈川県にあるって知ってました？」。鉄板の豆知識で場がほぐれる。</div></div>
+    <div class="tip"><div class="tip-title">2. 新幹線の始発・終点感</div><div class="tip-body">「品川から広島まで新幹線で乗り換えなし4時間」。移動の起点として品川の優位性を話す。<a href="https://www.jr-odekake.net/" target="_blank">JR西日本</a></div></div>
+    <div class="tip"><div class="tip-title">3. 品川のビジネスホテル密集</div><div class="tip-body">「品川、ホテルが多くて出張者に便利ですよね」。泊まり客として共通の体験から話が始まる。</div></div>
+    <div class="tip"><div class="tip-title">4. 天王洲アイルのリノベ</div><div class="tip-body">「天王洲、オシャレに変わりましたよね」。都市再生の話は広島駅周辺の開発話と連動する。<a href="https://www.tennoz.jp/" target="_blank">天王洲アイル</a></div></div>
+    <div class="tip"><div class="tip-title">5. 羽田空港は品川の隣感</div><div class="tip-body">「羽田からHIJまで1時間半。品川住みには最高のアクセス」。実際の所要時間ネタは実用的。</div></div>
+    <div class="tip"><div class="tip-title">6. 品川の魚市場・目黒川</div><div class="tip-body">「目黒川の桜、品川から歩けるんですよ」。広島の花フェスタとの季節ネタ対比が盛り上がる。</div></div>
+    <div class="tip"><div class="tip-title">7. ソニー本社が品川</div><div class="tip-body">「品川はソニーの本社があって、テクノロジー企業が多いですよ」。業界話への入り口になる。</div></div>
+    <div class="tip"><div class="tip-title">8. 品川の商業施設「アトレ」</div><div class="tip-body">「アトレ品川、便利でよく使います」。広島のekie（駅ビル）との比較で地元トークに転換できる。</div></div>
+    <div class="tip"><div class="tip-title">9. 東海道五十三次の宿場町</div><div class="tip-body">「品川って江戸時代の宿場なんですよ」。歴史ある広島との時代感対比で話が深まる。</div></div>
+    <div class="tip"><div class="tip-title">10. 高輪ゲートウェイ駅</div><div class="tip-body">「高輪ゲートウェイ、名前で賛否ありましたよね」。駅名論争は全国どこでも笑える話題じゃ。</div></div>
+    <div class="tip"><div class="tip-title">11. 品川水族館（しながわ水族館）</div><div class="tip-body">「しながわ水族館、意外と穴場で混まないんです」。広島のみやじマリンとの比較が楽しい。<a href="https://www.aquarium.gr.jp/" target="_blank">しながわ水族館</a></div></div>
+    <div class="tip"><div class="tip-title">12. 旧東海道商店街</div><div class="tip-body">「品川の旧東海道、今も昔の商店街が残ってて趣があるんです」。尾道・竹原との比較トークへ。</div></div>
+    <div class="tip"><div class="tip-title">13. インターシティ品川の外資系企業</div><div class="tip-body">「品川はグーグルやユニリーバも入っていて国際色強い」。ビジネスエリアとしての品川のブランドを話す。</div></div>
+    <div class="tip"><div class="tip-title">14. 品川-広島間のビジネス往来</div><div class="tip-body">「品川発6時の新幹線に乗ると広島に10時到着」。具体的な時刻の話は出張者に刺さるんよ。</div></div>
+    <div class="tip"><div class="tip-title">15. 港南口の再開発</div><div class="tip-body">「品川駅の港南口、リニア建設で大規模再開発中ですよ」。広島駅リニューアルとの並列話が弾む。</div></div>
+    <div class="tip"><div class="tip-title">16. 品川の海（東京湾）</div><div class="tip-body">「品川で海見えるんですが、瀬戸内の透明度には勝てないですね…」。素直な比較で広島への賛辞に。</div></div>
+    <div class="tip"><div class="tip-title">17. リニア新幹線と品川駅</div><div class="tip-body">「リニア開通したら品川-名古屋40分。広島まで伸びるのを楽しみにしてます」。未来話で盛り上がる。</div></div>
+    <div class="tip"><div class="tip-title">18. 品川の朝定食文化</div><div class="tip-body">「品川の吉野家・松屋、朝6時から満席。サラリーマン文化の象徴」。広島の朝ご飯文化との比較へ。</div></div>
+    <div class="tip"><div class="tip-title">19. 電車の混雑カルチャーショック</div><div class="tip-body">「山手線の朝ラッシュを広電と比べると、別の生き物ですよ」。笑いを取りながら広島を持ち上げる必殺技。</div></div>
+    <div class="tip"><div class="tip-title">20. 品川プリンスホテルの規模感</div><div class="tip-body">「品プリ、3000室以上あるのに予約が取れない」。広島の会場ホテルの話に転換しやすい。</div></div>
+
+    <div class="section-label" style="margin-top:16px;">🌊 淡路島トーク（鉄板20選）</div>
+    <div class="tip"><div class="tip-title">1. 玉ねぎは日本一</div><div class="tip-body">「淡路島の玉ねぎ、甘くて生でも食べられますよ」。広島の牡蠣・レモンと並ぶブランド食材ネタ。<a href="https://www.awaji-island.jp/" target="_blank">淡路島観光</a></div></div>
+    <div class="tip"><div class="tip-title">2. 日本神話の国生み伝説</div><div class="tip-body">「日本で最初に生まれた島が淡路島なんです」。宮島の神話文化と重ねると話が深まる。</div></div>
+    <div class="tip"><div class="tip-title">3. 明石海峡大橋の迫力</div><div class="tip-body">「橋を渡るたびに感動します。世界最長の吊り橋ですから」。広島の橋文化との比較トークへ。<a href="https://www.jb-honshi.co.jp/" target="_blank">本州四国連絡高速道路</a></div></div>
+    <div class="tip"><div class="tip-title">4. 道の駅密集地帯</div><div class="tip-body">「淡路島、道の駅が多くてドライブに最高ですよ」。広島の道の駅文化とも共鳴する話題。</div></div>
+    <div class="tip"><div class="tip-title">5. にじげんの森（阿波おどり等）</div><div class="tip-body">「ナルト・鬼滅コラボのアミューズメントが淡路にある」。意外な話題で相手のリアクションを楽しむ。<a href="https://nijigennomori.com/" target="_blank">にじげんの森</a></div></div>
+    <div class="tip"><div class="tip-title">6. 淡路牛のブランド力</div><div class="tip-body">「淡路牛、神戸牛・松阪牛ほど知られてないけど本当は負けてないんです」。ブランド競争の話は広島・比婆牛と重ねられる。</div></div>
+    <div class="tip"><div class="tip-title">7. 阿波踊りと徳島の関係</div><div class="tip-body">「淡路島って徳島文化圏と兵庫文化圏が混在しているんです」。文化の境界線ネタは地理好きに刺さる。</div></div>
+    <div class="tip"><div class="tip-title">8. 夕日スポット・慶野松原</div><div class="tip-body">「慶野松原の夕日、瀬戸内と同じオレンジ色で綺麗です」。瀬戸内の夕日トークで広島とつなげる。<a href="https://www.awaji-kankokyokai.jp/" target="_blank">淡路島観光協会</a></div></div>
+    <div class="tip"><div class="tip-title">9. フォルモサグランピング</div><div class="tip-body">「淡路島、グランピング施設が増えていて週末の穴場になってます」。アウトドアブームの話で盛り上がる。</div></div>
+    <div class="tip"><div class="tip-title">10. イングランドの丘（コアラ）</div><div class="tip-body">「淡路島にコアラがいるの知ってます？意外でしょ」。ギャップネタは会話のつかみに最高じゃ。<a href="https://www.england-hill.com/" target="_blank">イングランドの丘</a></div></div>
+    <div class="tip"><div class="tip-title">11. 鳴門の渦潮</div><div class="tip-body">「渦潮、実際に見ると大迫力で船が揺れます」。広島のフェリー体験と共鳴する海ネタ。<a href="https://www.uzusio.com/" target="_blank">鳴門うずしお観光</a></div></div>
+    <div class="tip"><div class="tip-title">12. 淡路インターチェンジ降りてすぐ感</div><div class="tip-body">「高速降りたら5分で温泉・玉ねぎ直売所・海鮮」。アクセス利便性の話で羨ましがらせる。</div></div>
+    <div class="tip"><div class="tip-title">13. 淡路人形浄瑠璃</div><div class="tip-body">「300年以上続く淡路の人形浄瑠璃、無形文化財です」。広島の神楽文化との伝統芸能対比が楽しい。</div></div>
+    <div class="tip"><div class="tip-title">14. 南淡路の海鮮・活魚</div><div class="tip-body">「南淡路の海鮮は神戸・大阪より新鮮で安い。広島の牡蠣みたいな産地の強みがある」。食文化比較で盛り上がる。</div></div>
+    <div class="tip"><div class="tip-title">15. HELLO KITTY SMILE</div><div class="tip-body">「ハローキティのテーマパークが淡路に移転したんです」。メディア話題で場が盛り上がる。<a href="https://hellokittysmile.jp/" target="_blank">HELLO KITTY SMILE</a></div></div>
+    <div class="tip"><div class="tip-title">16. 淡路島カレー</div><div class="tip-body">「淡路島は玉ねぎを使ったカレーが名物」。呉の海自カレーと並べるとカレー対決で笑いが取れる。</div></div>
+    <div class="tip"><div class="tip-title">17. 島内移動は車必須</div><div class="tip-body">「淡路島、電車がなくてレンタカーか自分の車が必須なんです」。広電がある広島との対比で話が弾む。</div></div>
+    <div class="tip"><div class="tip-title">18. リゾートホテル・ニジゲンノモリ周辺開発</div><div class="tip-body">「淡路島、本州・四国のちょうど中間で観光リゾート化が進んでます」。広島の観光発展話と重ねられる。</div></div>
+    <div class="tip"><div class="tip-title">19. 瀬戸内国際芸術祭との関係</div><div class="tip-body">「淡路も瀬戸内アートの文脈で語られることがある」。広島・宮島の現代アートとの接続で知的な話題へ。<a href="https://setouchi-artfest.jp/" target="_blank">瀬戸内芸術祭</a></div></div>
+    <div class="tip"><div class="tip-title">20. 淡路島産わかめ</div><div class="tip-body">「淡路島のわかめ、日本一の産地なんです」。産地自慢の掛け合いは広島人と楽しくできる王道ネタ。</div></div>
+  </div>
+</div>
+
 <!-- ======== TRANSPORT ======== -->
 <div class="section" id="sec-transport">
   <div class="card">
@@ -1626,6 +1766,147 @@ body.dark .cafe-area { background: #2d1515; }
       <div class="tip-body">本通商店街周辺などの市街地は<strong>駐輪禁止エリアが厳しい</strong>！紙屋町シャレオの地下駐輪場（無料・有料あり）を使うんよ。放置自転車は即撤去されるけえ注意して。</div>
       <div class="tip-actions">
         <button class="act-btn filled" onclick="sf('シャレオ 地下駐輪場','none')">📍 地下駐輪場</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== CAR ======== -->
+<div class="section" id="sec-car">
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">🚘 自動車・営業車完全ガイド</div>
+    </div>
+    <div class="section-label">⛽ ガソリン・給油</div>
+    <div class="tip">
+      <div class="tip-title">⛽ 近くのガソリンスタンドを探す</div>
+      <div class="tip-body">広島市内はエネオス・出光・コスモ・シェルが主要チェーン。セルフスタンドはフルより3〜5円/L安いんよ。高速道路SA内は割高なので、乗る前に満タンにするのが鉄則じゃ。</div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="sn('ガソリンスタンド セルフ')">📍 セルフを探す</button>
+        <button class="act-btn" onclick="sn('エネオス')">🔵 エネオス</button>
+        <button class="act-btn" onclick="sn('出光 ガソリンスタンド')">🔴 出光</button>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">💰 ガソリン価格の目安（広島市内）</div>
+      <div class="tip-body">
+        <strong>レギュラー：</strong>170〜185円/L前後（時期・店舗により変動）<br>
+        <strong>ハイオク：</strong>181〜196円/L前後<br>
+        <strong>軽油：</strong>150〜165円/L前後<br>
+        アプリ「gogo.gs」でリアルタイム価格比較ができるけえ活用してね。
+      </div>
+      <div class="tip-actions">
+        <button class="act-btn" onclick="window.open('https://gogo.gs/','_blank')">📱 gogo.gs 価格比較</button>
+      </div>
+    </div>
+    <div class="section-label">🚗 車での移動・ルート</div>
+    <div class="tip">
+      <div class="tip-title">🛣️ 広島市内の主要道路と渋滞ポイント</div>
+      <div class="tip-body">
+        <strong>国道2号線（旧道）：</strong>西区〜東区を東西に貫く幹線。朝夕は渋滞必至。<br>
+        <strong>広島高速1号線：</strong>広島駅〜西風新都。時間短縮に効果的じゃが有料。<br>
+        <strong>広島高速2号線：</strong>東区〜南区（宇品）。みなと公園・造船所エリアへ。<br>
+        <strong>国道54号線：</strong>市内〜安佐南・三次方面。山間部は冬に凍結注意。
+      </div>
+      <div class="tip-actions">
+        <button class="act-btn" onclick="window.open('https://www.roadnavi.pref.hiroshima.lg.jp/','_blank')">🌐 ひろしま道路ナビ</button>
+        <button class="act-btn filled" onclick="window.open('https://www.jartic.or.jp/','_blank')">🚗 道路交通情報</button>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">🏎️ 高速道路（山陽道・広島道）</div>
+      <div class="tip-body">
+        <strong>山陽自動車道：</strong>福山・岡山・東京方面（広島IC・廿日市IC等）<br>
+        <strong>広島自動車道：</strong>広島北IC〜千代田IC（中国道接続）<br>
+        <strong>広島岩国道路：</strong>廿日市IC〜岩国IC（無料区間あり）<br>
+        ETCは必須！休日割引で3割引になるけえ登録しとってね。
+      </div>
+      <div class="tip-actions">
+        <button class="act-btn" onclick="window.open('https://www.w-nexco.co.jp/','_blank')">🌐 NEXCO西日本</button>
+      </div>
+    </div>
+    <div class="section-label">🅿️ 駐車場・パーキング</div>
+    <div class="tip">
+      <div class="tip-title">🅿️ 市内コインパーキング検索・予約</div>
+      <div class="tip-body">繁華街（紙屋町・八丁堀・流川）の駐車場は試合日や休日に満車になりやすい。akippa・タイムズ・スマパーのアプリで事前予約すると確実じゃ。</div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="sn('コインパーキング')">📍 近くの駐車場</button>
+        <button class="act-btn" onclick="window.open('https://www.akippa.com/','_blank')">📱 akippa</button>
+        <button class="act-btn" onclick="window.open('https://times-info.net/','_blank')">🅿️ タイムズ</button>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">🏢 大型施設の無料駐車場</div>
+      <div class="tip-body">
+        <strong>イオンモール広島府中：</strong>約3,000台（無料）<br>
+        <strong>ゆめタウン廿日市：</strong>約2,000台（無料）<br>
+        <strong>ジ アウトレット広島：</strong>約2,000台（無料）<br>
+        <strong>THE OUTLETS HIROSHIMA：</strong>広電直結で公共交通もOK<br>
+        週末はこれらを目指してから市内に移動するのが賢いやり方じゃ。
+      </div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="sn('無料駐車場 ショッピングモール 広島')">📍 無料駐車場を探す</button>
+      </div>
+    </div>
+    <div class="section-label">🔧 車のメンテナンス・修理</div>
+    <div class="tip">
+      <div class="tip-title">🔧 広島市内の自動車ディーラー・修理</div>
+      <div class="tip-body">広島はマツダのお膝元。マツダ系ディーラー（広島マツダ・マツダアンフィニ）が多数。国道2号線沿いに大型ディーラーがずらりと並んどる。車検・タイヤ交換はオートバックス・イエローハットが便利じゃ。</div>
+      <div class="tip-actions">
+        <button class="act-btn" onclick="window.open('https://www.hiromaz.co.jp/','_blank')">🔴 広島マツダ</button>
+        <button class="act-btn filled" onclick="sn('オートバックス 広島')">🔧 オートバックス</button>
+        <button class="act-btn" onclick="sn('車検 広島')">🛠️ 車検を探す</button>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">🚗 冬支度・スタッドレス</div>
+      <div class="tip-body">広島市内は雪が少ないが、西条・三次・庄原・可部線沿線などは毎年積雪あり。11月中旬〜3月上旬は山間部営業ルートにスタッドレスが必須。タイヤ交換の予約は10月中に！混むんよ。</div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="sn('タイヤ交換 スタッドレス 広島')">🔍 タイヤ交換店を探す</button>
+      </div>
+    </div>
+    <div class="section-label">🚨 緊急時・ロードサービス</div>
+    <div class="tip">
+      <div class="tip-title">🆘 パンク・故障・事故の対応</div>
+      <div class="tip-body">
+        <strong>JAFロードサービス：</strong>0570-00-8139（24時間）<br>
+        <strong>各保険会社ロードサービス：</strong>保険証券に記載の番号へ<br>
+        <strong>高速道路故障：</strong>ハザード→路肩→発炎筒→ガードレール外へ退避。非常電話で連絡。<br>
+        <strong>事故：</strong>110（警察）・119（救急）に連絡後、相手の情報を記録。ドラレコ映像を保存するんよ。
+      </div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="window.open('https://jaf.or.jp/common/local/chugoku/hiroshima','_blank')">🆘 JAF 広島</button>
+      </div>
+    </div>
+    <div class="section-label">🚘 営業車活用テクニック</div>
+    <div class="tip">
+      <div class="tip-title">📱 営業車で使えるアプリ厳選</div>
+      <div class="tip-body">
+        📱 <strong>Yahoo!カーナビ</strong>：渋滞回避・抜け道案内が優秀<br>
+        📱 <strong>gogo.gs</strong>：最安ガソリンスタンドを即検索<br>
+        📱 <strong>akippa / タイムズ</strong>：駐車場を事前予約<br>
+        📱 <strong>Googleマップ</strong>：訪問先の営業時間・評判確認<br>
+        📱 <strong>SmartHR / freee</strong>：経費の交通費精算を即記録
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">🧹 営業車の清潔感を保つコツ</div>
+      <div class="tip-body">客先駐車場で車を見られることも多い！週1回の車内清掃と洗車を習慣に。コインランドリー並設のコインランドリーカーウォッシュが広島市内に増えとるんよ。名刺・カタログ・安全靴・ヘルメットは常時車載がプロの証じゃ。</div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="sn('コイン洗車場 広島')">🚿 洗車場を探す</button>
+      </div>
+    </div>
+    <div class="tip">
+      <div class="tip-title">☕ 営業間のリフレッシュスポット</div>
+      <div class="tip-body">長距離ルートの合間に立ち寄れる休憩ポイントを把握しておくんよ。<br>
+        <strong>呉方面：</strong>道の駅「蒲刈」「クロスロードみつぎ」<br>
+        <strong>尾道方面：</strong>道の駅「みつぎ」「世羅」<br>
+        <strong>西条方面：</strong>道の駅「西条のん太の酒蔵」<br>
+        <strong>市内：</strong>平和大通り沿いのコンビニ（セブン・ローソン）が多い
+      </div>
+      <div class="tip-actions">
+        <button class="act-btn filled" onclick="sn('道の駅 広島')">🌿 道の駅を探す</button>
+        <button class="act-btn" onclick="sn('コンビニ 駐車場あり')">🏪 駐車場付きコンビニ</button>
       </div>
     </div>
   </div>
@@ -1983,7 +2264,50 @@ updateDT();
 setInterval(updateDT, 10000);
 
 // ===== TABS =====
-const tabIds = ['home','carp','map','food','cafe','onsen','spot','phrase','transport','tips','diary','calc','sales'];
+const tabIds = ['home','carp','map','food','cafe','onsen','spot','phrase','talk','transport','car','tips','diary','calc','sales'];
+
+// ===== BATTING FORTUNE (no animation) =====
+let battingLocked = false;
+async function startBatting() {
+  if (battingLocked) return;
+  battingLocked = true;
+  const btn = document.getElementById('bat-btn');
+  const resultEl = document.getElementById('batting-result');
+  btn.style.opacity = '0.5';
+  resultEl.style.display = 'block';
+  resultEl.textContent = '⏳ 占い中けえ…';
+
+  const outcomes = ['💥 ホームラン！場外弾じゃ！','⚾ 完璧な当たり！二塁打！','🎯 センター前ヒット！','🔥 ライト線への長打！','😱 内野フライ…アウト','💨 空振り三振！次は打つけえ！','🙈 ボール球に手を出した…','✊ デッドボール！出塁じゃ！'];
+  const outcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+  await showResult(outcome);
+  btn.style.opacity = '1';
+  battingLocked = false;
+}
+
+async function showResult(outcome) {
+  const resultEl = document.getElementById('batting-result');
+  resultEl.style.display = 'block';
+  resultEl.textContent = outcome + '　占い取得中…';
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日(${['日','月','火','水','木','金','土'][now.getDay()]})`;
+  const prompt = `あなたはバッティング占い師です。今日の日付と打撃結果を踏まえて、必ず「明日香さん、」で始まる前向きで元気になれる今日の運勢を広島弁で60文字以内で一言だけ返してください。余計な説明や改行は不要です。【今日の日付】${dateStr}【打撃結果】${outcome}`;
+  const gasUrl = 'https://script.google.com/macros/s/AKfycbxT2T8HcLaGMSnaKzwR0AbtXu1QD6tZ5e638EHaQwI5zW4nrgTsYTW_QaJFhyoyvg/exec';
+  try {
+    const resp = await fetch(gasUrl, {method:'POST', body: JSON.stringify({prompt})});
+    const data = await resp.json();
+    const fortune = (data.message || '').trim() || '明日香さん、今日はぶちええ一日になるけえ！';
+    resultEl.innerHTML = `<span style="color:var(--gold)">${outcome}</span><br><span style="color:white;font-weight:500;">${fortune}</span>`;
+  } catch(e) {
+    const fallbacks = [
+      '明日香さん、今日はホームランの日じゃ！思い切って行動すれば道が開けるけえ！',
+      '明日香さん、打撃好調！積極的に攻めれば今日はぶちええことが起きるんよ！',
+      '明日香さん、今日はじっくり待って好球必打！チャンスを逃さんようにしてね！',
+      '明日香さん、空振りしても次の一球に集中じゃ！前向きにいくんよ！',
+    ];
+    const fortune = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    resultEl.innerHTML = `<span style="color:var(--gold)">${outcome}</span><br><span style="color:white;font-weight:500;">${fortune}</span>`;
+  }
+}
 function tab(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -2062,7 +2386,217 @@ async function loadWeather() {
 }
 loadWeather();
 
-// ===== CALCULATORS =====
+// ===== RAIN RADAR (JMA nowcast tiles on canvas) =====
+async function loadRadar() {
+  const canvas = document.getElementById('radar-canvas');
+  const statusEl = document.getElementById('radar-status');
+  const timeEl = document.getElementById('radar-time');
+  if (!canvas) return;
+  statusEl.textContent = '⏳ 雨雲データを取得中けえ…';
+
+  // --- map params (広島市中心付近) ---
+  const ZOOM = 8;
+  const LAT  = 34.3853;
+  const LON  = 132.4553;
+  const TILE_SIZE = 256;
+  const COLS = 3, ROWS = 3;      // 3×3タイルグリッド = 768×768px描画後にリサイズ
+  const PW = TILE_SIZE * COLS;
+  const PH = TILE_SIZE * ROWS;
+
+  const dpr = window.devicePixelRatio || 1;
+  const dispW = canvas.parentElement.offsetWidth || 360;
+  const dispH = Math.round(dispW * 0.65);
+  canvas.width  = dispW * dpr;
+  canvas.height = dispH * dpr;
+  canvas.style.height = dispH + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // tile coords for center
+  function latLonToTile(lat, lon, z) {
+    const n = Math.pow(2, z);
+    const x = Math.floor((lon + 180) / 360 * n);
+    const latRad = lat * Math.PI / 180;
+    const y = Math.floor((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n);
+    return {x, y};
+  }
+  const center = latLonToTile(LAT, LON, ZOOM);
+  const startX = center.x - 1;
+  const startY = center.y - 1;
+
+  // pixel offset of center within the 3×3 grid
+  function tilePixelOffset(lat, lon, z, tx, ty) {
+    const n = Math.pow(2, z);
+    const px = ((lon + 180) / 360 * n - tx) * TILE_SIZE;
+    const latRad = lat * Math.PI / 180;
+    const py = ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n - ty) * TILE_SIZE;
+    return {px, py};
+  }
+  const off = tilePixelOffset(LAT, LON, ZOOM, startX, startY);
+
+  // src rect: center dispW×dispH region around the lat/lon center pixel
+  const srcX = Math.round(off.px - dispW / 2);
+  const srcY = Math.round(off.py - dispH / 2);
+
+  // draw helper: load image with CORS
+  function loadImg(url) {
+    return new Promise((res, rej) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload  = () => res(img);
+      img.onerror = () => rej(new Error('img load failed: ' + url));
+      img.src = url;
+    });
+  }
+
+  try {
+    // 1. Fetch latest nowcast time from JMA
+    const tjson = await fetch('https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N1.json').then(r => r.json());
+    const latest = tjson[0]; // descending order, [0] is newest
+    const bt = latest.basetime;   // e.g. "20240601055500"
+    const vt = latest.validtime;
+
+    // Format for display: "YYYYMMDDHHmm" → "HH:mm"
+    const hh = bt.slice(8, 10), mm = bt.slice(10, 12);
+    timeEl.textContent = `気象庁 ${hh}:${mm} 現在`;
+
+    // 2. Draw OSM base tiles first (background map)
+    const offscreenBase = document.createElement('canvas');
+    offscreenBase.width  = PW;
+    offscreenBase.height = PH;
+    const bctx = offscreenBase.getContext('2d');
+
+    const basePromises = [];
+    for (let dy = 0; dy < ROWS; dy++) {
+      for (let dx = 0; dx < COLS; dx++) {
+        const tx = startX + dx, ty = startY + dy;
+        basePromises.push(
+          loadImg(`https://tile.openstreetmap.org/${ZOOM}/${tx}/${ty}.png`)
+            .then(img => bctx.drawImage(img, dx * TILE_SIZE, dy * TILE_SIZE))
+            .catch(() => {}) // skip failed tiles silently
+        );
+      }
+    }
+    await Promise.all(basePromises);
+
+    // 3. Draw radar tiles on top (JMA nowcast)
+    const radarPromises = [];
+    for (let dy = 0; dy < ROWS; dy++) {
+      for (let dx = 0; dx < COLS; dx++) {
+        const tx = startX + dx, ty = startY + dy;
+        const radarUrl = `https://www.jma.go.jp/bosai/jmatile/data/nowc/${bt}/none/${vt}/surf/hrpns/${ZOOM}/${tx}/${ty}.png`;
+        radarPromises.push(
+          loadImg(radarUrl)
+            .then(img => bctx.drawImage(img, dx * TILE_SIZE, dy * TILE_SIZE))
+            .catch(() => {})
+        );
+      }
+    }
+    await Promise.all(radarPromises);
+
+    // 4. Crop and draw onto visible canvas
+    ctx.clearRect(0, 0, dispW, dispH);
+    ctx.drawImage(offscreenBase, srcX, srcY, dispW, dispH, 0, 0, dispW, dispH);
+
+    // 5. Crosshair at center
+    const cx = dispW / 2, cy = dispH / 2;
+    ctx.strokeStyle = 'rgba(200,16,46,0.85)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(cx - 10, cy); ctx.lineTo(cx + 10, cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy - 10); ctx.lineTo(cx, cy + 10); ctx.stroke();
+
+    statusEl.textContent = '✅ 広島市周辺の雨雲 (気象庁 高解像度降水ナウキャスト)';
+  } catch(e) {
+    ctx.fillStyle = '#1a2a1a';
+    ctx.fillRect(0, 0, dispW, dispH);
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.font = '13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('レーダーデータを取得できんかったわ', dispW / 2, dispH / 2 - 10);
+    ctx.font = '11px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('下のリンクから気象庁で確認してね', dispW / 2, dispH / 2 + 14);
+    statusEl.innerHTML = '❌ 取得失敗 → <a href="https://www.jma.go.jp/bosai/nowc/" target="_blank" style="color:var(--carp-red);">気象庁ナウキャストを開く</a>';
+  }
+}
+loadRadar();
+
+// ===== RSS TICKER (広島ニュース) =====
+async function loadTicker() {
+  const el = document.getElementById('ticker-inner');
+  // NHK広島 RSS をCORSプロキシ経由で取得
+  const rssUrl = 'https://www.nhk.or.jp/rss/news/cat6.xml'; // NHK地域ニュース広島
+  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(rssUrl);
+  const fallbackItems = [
+    '⚾ 燃えよカープ！2026シーズン開幕中じゃ',
+    '🌊 瀬戸内の恵み・広島牡蠣は今が美味しいんよ',
+    '🍳 「広島焼き」はNGワード！必ず「お好み焼き」と言ってね',
+    '🚲 ぴーすくるで広島市内をサクッと移動するけえ',
+    '🏯 広島城・三の丸 2025年3月オープンじゃ！',
+    '🍁 宮島・厳島神社 世界遺産登録30周年！',
+    '🚃 広電（路面電車）1日乗車券で市内どこでも行けるけえ',
+    '☀️ 瀬戸内海式気候で広島はぶち晴れが多いんよ',
+  ];
+  try {
+    const resp = await fetch(proxyUrl);
+    const data = await resp.json();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data.contents, 'text/xml');
+    const items = Array.from(doc.querySelectorAll('item')).slice(0, 12);
+    if (items.length === 0) throw new Error('no items');
+    const texts = items.map(item => {
+      const title = item.querySelector('title')?.textContent?.trim() || '';
+      const link  = item.querySelector('link')?.textContent?.trim() || '';
+      return { title, link };
+    });
+    // Keyword → URL map (hit → use URL, otherwise fall back to Google search)
+    const kwMap = [
+      { re: /カープ|広島東洋/,      url: 'https://www.carp.co.jp/' },
+      { re: /マツダスタジアム/,      url: 'https://www.google.com/maps/search/?api=1&query=マツダスタジアム' },
+      { re: /宮島|厳島/,             url: 'https://www.miyajima.or.jp/' },
+      { re: /お好み焼き|お好み村/,   url: 'https://www.google.com/maps/search/?api=1&query=お好み焼き+広島' },
+      { re: /牡蠣|かき|カキ/,        url: 'https://www.google.com/maps/search/?api=1&query=牡蠣料理+広島' },
+      { re: /広電|路面電車/,          url: 'https://www.hiroden.co.jp/' },
+      { re: /ぴーすくる/,             url: 'https://docomo-cycle.jp/hiroshima/' },
+      { re: /平和記念公園|原爆ドーム/,url: 'https://www.google.com/maps/search/?api=1&query=平和記念公園+広島' },
+      { re: /広島城/,                 url: 'https://www.google.com/maps/search/?api=1&query=広島城' },
+      { re: /尾道/,                   url: 'https://www.google.com/maps/search/?api=1&query=尾道+観光' },
+      { re: /呉/,                     url: 'https://www.google.com/maps/search/?api=1&query=呉+大和ミュージアム' },
+      { re: /竹原/,                   url: 'https://www.google.com/maps/search/?api=1&query=竹原+町並み保存地区' },
+      { re: /しまなみ/,               url: 'https://shimanami-cycle.or.jp/' },
+      { re: /レモン/,                  url: 'https://www.google.com/maps/search/?api=1&query=広島レモン' },
+      { re: /汁なし担々麺/,           url: 'https://www.google.com/maps/search/?api=1&query=汁なし担々麺+広島' },
+      { re: /中国新聞/,               url: 'https://www.chugoku-np.co.jp/' },
+      { re: /天気|気象|雨|台風/,      url: 'https://weather.yahoo.co.jp/weather/34/6710.html' },
+      { re: /地震/,                   url: 'https://www.jma.go.jp/bosai/map.html#5/34.3/132.5/&elem=int' },
+      { re: /観光/,                   url: 'https://dive-hiroshima.com/' },
+      { re: /交通|渋滞/,              url: 'https://www.roadnavi.pref.hiroshima.lg.jp/' },
+    ];
+    function enrichLink(title, rssLink) {
+      for (const kw of kwMap) {
+        if (kw.re.test(title)) return kw.url;
+      }
+      // No keyword match → Google search with title as query
+      return 'https://www.google.com/search?q=' + encodeURIComponent(title + '　広島');
+    }
+    // Build ticker HTML with keyword-enriched clickable links
+    const html = texts.map(t => {
+      const url = enrichLink(t.title, t.link);
+      return `📰 <a href="${url}" target="_blank" style="color:var(--gold);text-decoration:none;">${t.title}</a> &nbsp;&nbsp;&nbsp;`;
+    }).join('⬤ &nbsp;&nbsp;&nbsp;');
+    el.innerHTML = html + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+  } catch(e) {
+    // Fallback to static items if RSS fails
+    el.textContent = fallbackItems.join('　⚡　') + '　　　　　';
+  }
+  // Restart CSS animation by clone trick
+  const parent = el.parentElement;
+  const clone = el.cloneNode(true);
+  parent.replaceChild(clone, el);
+}
+loadTicker();
+// Refresh ticker every 10 minutes
+setInterval(loadTicker, 10 * 60 * 1000);
 function calcSplit() {
   const t = parseFloat(document.getElementById('sp-total').value) || 0;
   const p = parseFloat(document.getElementById('sp-ppl').value) || 1;

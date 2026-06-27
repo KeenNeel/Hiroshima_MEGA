@@ -234,12 +234,12 @@ body.dark .cafe-area { background: #2d1515; }
       <button class="ctrl-btn" onclick="document.body.classList.toggle('dark')">🌙</button>
     </div>
   </div>
-  <div class="header-stats">
-    <a class="stat-chip" href="https://weather.yahoo.co.jp/weather/34/6710.html" target="_blank" style="text-decoration:none;color:white;">🌡️ 広島市 <strong id="hdr-temp">--°C</strong></a>
-    <a class="stat-chip" href="https://www.carp.co.jp/" target="_blank" style="text-decoration:none;color:white;">🏆 カープ <strong>2026シーズン進行中</strong></a>
-    <a class="stat-chip" href="https://www.google.com/maps/search/?api=1&query=牡蠣料理+広島" target="_blank" style="text-decoration:none;color:white;">🦪 牡蠣 <strong>旬：冬〜春</strong></a>
-    <a class="stat-chip" href="https://docomo-cycle.jp/hiroshima/" target="_blank" style="text-decoration:none;color:white;">🚲 ぴーすくる <strong>30分165円</strong></a>
-    <a class="stat-chip" href="https://www.miyajima.or.jp/" target="_blank" style="text-decoration:none;color:white;">🍁 宮島 <strong>フェリー10分</strong></a>
+  <div class="header-stats" id="header-stats-bar">
+    <a class="stat-chip" href="https://weather.yahoo.co.jp/weather/34/6710.html" target="_blank" style="text-decoration:none;color:white;">🌡️ <strong id="hdr-temp">--°C</strong></a>
+    <a class="stat-chip" href="https://www.carp.co.jp/" target="_blank" style="text-decoration:none;color:white;">⚾ <strong>カープ</strong></a>
+    <a class="stat-chip" href="https://www.google.com/maps/search/?api=1&query=牡蠣料理+広島" target="_blank" style="text-decoration:none;color:white;">🦪 <strong>牡蠣</strong></a>
+    <a class="stat-chip" href="https://docomo-cycle.jp/hiroshima/" target="_blank" style="text-decoration:none;color:white;">🚲 <strong>ぴーすくる</strong></a>
+    <a class="stat-chip" href="https://www.miyajima.or.jp/" target="_blank" style="text-decoration:none;color:white;">🍁 <strong>宮島</strong></a>
   </div>
   <div class="header-datetime">
     <span>⏰</span>
@@ -1717,6 +1717,75 @@ function sf(food, type) {
   window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q), '_blank');
 }
 
+// ===== AI SEASONAL CHIPS (旬情報・生活チップ) =====
+async function loadChips() {
+  const bar = document.getElementById('header-stats-bar');
+  if (!bar) return;
+
+  const gasUrl = 'https://script.google.com/macros/s/AKfycbxT2T8HcLaGMSnaKzwR0AbtXu1QD6tZ5e638EHaQwI5zW4nrgTsYTW_QaJFhyoyvg/exec';
+  const now = new Date();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const weekDays = ['日','月','火','水','木','金','土'];
+  const dow = weekDays[now.getDay()];
+  const hour = now.getHours();
+  const season = month <= 2 || month === 12 ? '冬' : month <= 5 ? '春' : month <= 8 ? '夏' : '秋';
+
+  // DOM操作でチップ生成（innerHTML不使用→URLが壊れない）
+  function makeChip(emoji, label, url) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.className = 'stat-chip';
+    a.style.cssText = 'text-decoration:none;color:white;';
+    a.appendChild(document.createTextNode(emoji + ' '));
+    const s = document.createElement('strong');
+    s.textContent = String(label).slice(0, 8);
+    a.appendChild(s);
+    return a;
+  }
+
+  function replaceChips(arr) {
+    Array.from(bar.children).forEach((el, i) => { if (i > 0) el.remove(); });
+    arr.forEach(([em, la, ur]) => bar.appendChild(makeChip(em, la, ur)));
+  }
+
+  const prompt = '今日は' + month + '月' + day + '日(' + dow + ')、時刻は' + hour + '時台、季節は' + season + 'です。\n以下のペルソナに向けた「今日役立つ旬の生活情報チップ」を5件、JSON配列で返してください。\n\n【ペルソナ】\n- 埼玉県出身・東京海洋大学大学院卒・新卒1〜2年目\n- 広島市内に1人暮らし中\n- 金属加工部品専門商社の営業職\n- 毎日営業車で広島の町工場を巡回\n- 広島の食・文化にまだ不慣れな部分もある\n- 節約・健康・仕事効率化・広島グルメに関心あり\n\n【出力ルール】\n- 今の季節・月・曜日・時間帯に合ったリアルな旬情報を優先\n- 広島ならではの食材・イベント・生活ネタを3件以上含める\n- 営業女子の1人暮らし目線（節約・健康・家事・仕事のコツなど）を2件以上含める\n- ラベルは必ず全角5文字以内の超短テキスト（例：小鰯旬、梅雨傘、節約飯、カープ熱）\n- URLはGoogle Maps検索（https://www.google.com/maps/search/?api=1&query=検索語）またはGoogle検索（https://www.google.com/search?q=検索語）または公式サイトを使うこと\n- 説明文・マークダウン・バッククォートは一切不要。JSONのみを返す\n\n【JSON形式（必ず5件の配列のみ）】\n[{"emoji":"🦪","short":"牡蠣旬","url":"https://www.google.com/maps/search/?api=1&query=牡蠣フライ+広島"},{"emoji":"☔","short":"梅雨傘","url":"https://www.google.com/search?q=折りたたみ傘+おすすめ"},{"emoji":"⚾","short":"カープ熱","url":"https://www.carp.co.jp/"},{"emoji":"🍱","short":"節約飯","url":"https://www.google.com/search?q=節約レシピ+1人暮らし"},{"emoji":"🚗","short":"渋滞情報","url":"https://www.jartic.or.jp/"}]';
+
+  try {
+    const resp = await fetch(gasUrl, { method: 'POST', body: JSON.stringify({ prompt }) });
+    const data = await resp.json();
+    let raw = (data.message || '').trim().replace(/```[a-z]*\s*/g, '').replace(/```\s*/g, '').trim();
+    const s = raw.indexOf('['), e = raw.lastIndexOf(']');
+    if (s === -1 || e === -1) throw new Error('no array');
+    const chips = JSON.parse(raw.slice(s, e + 1));
+    if (!Array.isArray(chips) || !chips.length) throw new Error('empty');
+    replaceChips(chips.map(c => [
+      String(c.emoji || '✨'),
+      String(c.short || c.label || '情報'),
+      String(c.url || 'https://www.google.com/')
+    ]));
+  } catch(e) {
+    const m = new Date().getMonth() + 1;
+    const fb = {
+      1:  [['🦪','牡蠣鍋','https://www.google.com/maps/search/?api=1&query=牡蠣鍋+広島'],['❄️','防寒対策','https://www.google.com/search?q=広島+冬+防寒グッズ'],['⚾','カープ','https://www.carp.co.jp/'],['🍱','節約弁当','https://www.google.com/search?q=節約弁当+レシピ+簡単'],['🛁','ほの湯','https://www.google.com/maps/search/?api=1&query=ほの湯+広島']],
+      2:  [['🦪','牡蠣旬','https://www.google.com/maps/search/?api=1&query=牡蠣+広島'],['🌸','梅見頃','https://www.google.com/maps/search/?api=1&query=梅+縮景園+広島'],['⚾','カープ','https://www.carp.co.jp/'],['💊','花粉対策','https://www.google.com/maps/search/?api=1&query=ドラッグストア+広島'],['🫙','節約飯','https://www.google.com/search?q=節約レシピ+1人暮らし']],
+      3:  [['🌸','花見','https://www.google.com/maps/search/?api=1&query=桜+花見+広島'],['🍳','お好み焼','https://www.google.com/maps/search/?api=1&query=お好み焼き+広島'],['🚲','ぴーすくる','https://docomo-cycle.jp/hiroshima/'],['👔','春コート','https://www.google.com/search?q=営業女子+春コート'],['🎌','新生活','https://www.google.com/search?q=新生活+必需品+1人暮らし']],
+      4:  [['🌸','花フェス','https://www.google.com/search?q=広島+フラワーフェスティバル'],['🦐','海老旬','https://www.google.com/maps/search/?api=1&query=海老料理+広島'],['⚾','カープ','https://www.carp.co.jp/'],['🚗','渋滞回避','https://www.jartic.or.jp/'],['🌿','山菜旬','https://www.google.com/maps/search/?api=1&query=山菜料理+広島']],
+      5:  [['🐟','小鰯旬','https://www.google.com/maps/search/?api=1&query=小鰯+広島'],['🌊','瀬戸内','https://www.google.com/maps/search/?api=1&query=瀬戸内海+ドライブ+広島'],['⚾','カープ','https://www.ticket.carp.co.jp/'],['🍋','レモン酎','https://www.google.com/maps/search/?api=1&query=レモンサワー+広島'],['🧹','大掃除','https://www.google.com/search?q=1人暮らし+大掃除']],
+      6:  [['🐟','小鰯旬','https://www.google.com/maps/search/?api=1&query=小鰯+定食+広島'],['☔','梅雨傘','https://www.google.com/search?q=折りたたみ傘+コンパクト'],['🍋','レモン旬','https://www.google.com/maps/search/?api=1&query=レモンスイーツ+広島'],['⚾','カープ','https://radio.rcc.jp/'],['🧺','洗濯術','https://www.google.com/maps/search/?api=1&query=コインランドリー+広島']],
+      7:  [['🎆','夏祭り','https://www.google.com/search?q=広島+夏祭り'],['🍺','夏ビール','https://www.google.com/maps/search/?api=1&query=ビアガーデン+広島'],['🌡️','熱中症','https://www.google.com/search?q=熱中症対策+車+営業'],['⚾','カープ','https://www.ticket.carp.co.jp/'],['🌊','宮島','https://www.miyajima.or.jp/']],
+      8:  [['🏮','8/6平和','https://www.google.com/search?q=広島+平和記念式典'],['🍦','かき氷','https://www.google.com/maps/search/?api=1&query=かき氷+広島'],['🐙','タコ旬','https://www.google.com/maps/search/?api=1&query=タコ料理+広島'],['⚾','カープ','https://www.carp.co.jp/'],['🛁','ほの湯','https://www.google.com/maps/search/?api=1&query=ほの湯+広島']],
+      9:  [['🍁','宮島紅葉','https://www.google.com/maps/search/?api=1&query=宮島+紅葉'],['🐟','太刀魚旬','https://www.google.com/maps/search/?api=1&query=太刀魚+広島'],['⚾','カープCS','https://www.carp.co.jp/'],['🍄','きのこ旬','https://www.google.com/maps/search/?api=1&query=きのこ料理+広島'],['🧥','衣替え','https://www.google.com/search?q=衣替え+収納+1人暮らし']],
+      10: [['🍁','紅葉狩','https://www.google.com/maps/search/?api=1&query=紅葉+ドライブ+広島'],['🦀','松葉ガニ','https://www.google.com/maps/search/?api=1&query=松葉ガニ+広島'],['🍁','もみじ饅','https://www.google.com/maps/search/?api=1&query=もみじ饅頭+宮島'],['⚾','カープ','https://www.carp.co.jp/'],['🏯','広島城','https://www.google.com/maps/search/?api=1&query=広島城']],
+      11: [['🦀','松葉ガニ','https://www.google.com/maps/search/?api=1&query=松葉ガニ+広島'],['🦪','牡蠣旬','https://www.google.com/maps/search/?api=1&query=牡蠣料理+広島'],['🍁','宮島紅葉','https://www.miyajima.or.jp/'],['💡','ドリミネ','https://www.google.com/search?q=広島+ドリミネーション'],['🧤','冬タイヤ','https://www.google.com/maps/search/?api=1&query=タイヤ交換+広島']],
+      12: [['🦪','牡蠣鍋','https://www.google.com/maps/search/?api=1&query=牡蠣鍋+広島'],['💡','ドリミネ','https://www.google.com/search?q=広島+ドリミネーション'],['🎂','クリスマス','https://www.google.com/maps/search/?api=1&query=クリスマスディナー+広島'],['🎍','大掃除','https://www.google.com/search?q=年末大掃除+1人暮らし'],['⚾','カープ','https://www.carp.co.jp/']],
+    };
+    replaceChips(fb[m] || fb[6]);
+  }
+}
+loadChips();
+
 // ===== WEATHER =====
 async function loadWeather() {
   const wmap = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️'};
@@ -1754,6 +1823,7 @@ async function loadWeather() {
   }
 }
 loadWeather();
+
 
 // ===== RAIN RADAR (JMA nowcast tiles on canvas) =====
 async function loadRadar() {
